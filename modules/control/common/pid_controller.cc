@@ -93,7 +93,8 @@ void PIDController::SetPID(const PidConf &pid_conf) {
 }
 
 int PIDController::IntegratorSaturationStatus() const {
-  return integrator_saturation_status_;
+  // return integrator_saturation_status_;
+  return   integral_;
 }
 
 bool PIDController::IntegratorHold() const { return integrator_hold_; }
