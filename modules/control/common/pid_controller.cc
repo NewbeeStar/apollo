@@ -96,7 +96,18 @@ int PIDController::IntegratorSaturationStatus() const {
   // return integrator_saturation_status_;
   return   integral_;
 }
-
+int PIDController::kp() const {
+  return   kp_;
+}
+int PIDController::ki() const {
+  return   ki_;
+}
+int PIDController::kd() const {
+  return   kd_;
+}
+int PIDController::Integrator() const {
+  return   integral_;
+}
 bool PIDController::IntegratorHold() const { return integrator_hold_; }
 
 void PIDController::SetIntegratorHold(bool hold) { integrator_hold_ = hold; }

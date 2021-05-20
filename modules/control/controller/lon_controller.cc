@@ -223,6 +223,13 @@ Status LonController::ComputeControlCommand(
     speed_pid_controller_.SetPID(lon_controller_conf.high_speed_pid_conf());
   }
 
+  debug->set_station_kp(station_pid_controller_.kp());
+  debug->set_station_ki(station_pid_controller_.ki());
+  debug->set_station_kd(station_pid_controller_.kd());
+  debug->set_speed_kp(speed_pid_controller_.kp());
+  debug->set_speed_ki(speed_pid_controller_.ki());
+  debug->set_speed_kd(speed_pid_controller_.kd());
+
   double speed_offset =
       station_pid_controller_.Control(station_error_limited, ts);
   if (enable_leadlag) {
