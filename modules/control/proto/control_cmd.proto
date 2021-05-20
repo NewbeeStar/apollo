@@ -107,6 +107,10 @@ message SimpleLongitudinalDebug {
   optional apollo.common.TrajectoryPoint current_matched_point = 32;
   optional apollo.common.TrajectoryPoint current_reference_point = 33;
   optional apollo.common.TrajectoryPoint preview_reference_point = 34;
+  optional double kp = 35;
+  optional double ki = 36;
+  optional double kd = 37;
+  optional double integral = 38;
 }
 
 message SimpleLateralDebug {

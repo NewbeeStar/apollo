@@ -24,7 +24,3 @@
 
 [README](FAQs/README.md) - Commonly asked questions about Apollo's setup and modules
 
-## Technical Documents
-
-[README](technical_documents/README.md) - Some documents helping developers on code reading and algorithm understanding
-

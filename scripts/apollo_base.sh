@@ -46,21 +46,13 @@ function determine_bin_prefix() {
 
 function setup_device_for_aarch64() {
   local can_dev="/dev/can0"
-  local socket_can_dev="can0"
   if [ ! -e "${can_dev}" ]; then
     warning "No CAN device named ${can_dev}. "
+    return
   fi
 
-  if [[ -x "$(command -v ip)" ]]; then
-    if ! ip link show type can | grep "${socket_can_dev}" &>/dev/null; then
-      warning "No SocketCAN device named ${socket_can_dev}."
-    else
-      sudo ip link set can0 type can bitrate 500000
-      sudo ip link set can0 up
-    fi
-  else
-    warning "ip command not found."
-  fi
+  sudo ip link set can0 type can bitrate 500000
+  sudo ip link set can0 up
 }
 
 function setup_device_for_amd64() {
@@ -120,7 +112,7 @@ function decide_task_dir() {
   fi
 
   if [ -z "${DISK}" ]; then
-    info "Cannot find portable disk. Fallback to apollo data dir."
+    echo "Cannot find portable disk. Fallback to apollo data dir."
     DISK="/apollo"
   fi
 
@@ -130,7 +122,7 @@ function decide_task_dir() {
   TASK_DIR="${BAG_PATH}/${TASK_ID}"
   mkdir -p "${TASK_DIR}"
 
-  info "Record bag to ${TASK_DIR}..."
+  echo "Record bag to ${TASK_DIR}..."
   export TASK_ID="${TASK_ID}"
   export TASK_DIR="${TASK_DIR}"
 }
@@ -153,18 +145,18 @@ function start_customized_path() {
 
   is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
   if [ $? -eq 1 ]; then
-    eval "nohup cyber_launch start ${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch &" &>/dev/null
+    eval "nohup cyber_launch start ${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch &"
     sleep 0.5
     is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
     if [ $? -eq 0 ]; then
-      ok "Launched module ${MODULE}."
+      echo "Launched module ${MODULE}."
       return 0
     else
-      error "Could not launch module ${MODULE}. Is it already built?"
+      echo "Could not launch module ${MODULE}. Is it already built?"
       return 1
     fi
   else
-    info "Module ${MODULE} is already running - skipping."
+    echo "Module ${MODULE} is already running - skipping."
     return 2
   fi
 }
@@ -181,7 +173,7 @@ function start_prof_customized_path() {
   MODULE=$2
   shift 2
 
-  info "Make sure you have built with 'bash apollo.sh build_prof'"
+  echo "Make sure you have built with 'bash apollo.sh build_prof'"
   LOG="${APOLLO_ROOT_DIR}/data/log/${MODULE}.out"
   is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
   if [ $? -eq 1 ]; then
@@ -194,15 +186,15 @@ function start_prof_customized_path() {
     sleep 0.5
     is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
     if [ $? -eq 0 ]; then
-      ok "Launched module ${MODULE} in prof mode."
-      echo -e " Export profile by command:\n\t${YELLOW}google-pprof --pdf $BINARY $PROF_FILE > ${MODULE}_prof.pdf${NO_COLOR}"
+      echo -e "Launched module ${MODULE} in prof mode. \nExport profile by command:"
+      echo -e "${YELLOW}google-pprof --pdf $BINARY $PROF_FILE > ${MODULE}_prof.pdf${NO_COLOR}"
       return 0
     else
-      error "Could not launch module ${MODULE}. Is it already built?"
+      echo "Could not launch module ${MODULE}. Is it already built?"
       return 1
     fi
   else
-    info "Module ${MODULE} is already running - skipping."
+    echo "Module ${MODULE} is already running - skipping."
     return 2
   fi
 }
@@ -223,7 +215,7 @@ function start_fe_customized_path() {
   if [ $? -eq 1 ]; then
     eval "cyber_launch start ${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch"
   else
-    info "Module ${MODULE} is already running - skipping."
+    echo "Module ${MODULE} is already running - skipping."
     return 2
   fi
 }
@@ -258,15 +250,15 @@ function stop_customized_path() {
 
   is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
   if [ $? -eq 1 ]; then
-    info "${MODULE} process is not running!"
+    echo "${MODULE} process is not running!"
     return
   fi
 
   cyber_launch stop "${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch"
   if [ $? -eq 0 ]; then
-    ok "Successfully stopped module ${MODULE}."
+    echo "Successfully stopped module ${MODULE}."
   else
-    info "Module ${MODULE} is not running - skipping."
+    echo "Module ${MODULE} is not running - skipping."
   fi
 }
 
@@ -329,8 +321,8 @@ function record_bag_env_log() {
 
   git status > /dev/null 2>&1
   if [ $? -ne 0 ]; then
-    warning "Not in Git repo, maybe because you are in release container."
-    info "Skip log environment."
+    echo "Not in Git repo, maybe because you are in release container."
+    echo "Skip log environment."
     return
   fi
 

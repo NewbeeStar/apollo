@@ -49,7 +49,6 @@ cc_library(
         "//modules/perception/inference/utils:inference_gemm_lib",
         "//modules/perception/inference/utils:inference_util_lib",
     ],
-    alwayslink = True,
 )
 
 cpplint()

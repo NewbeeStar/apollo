@@ -79,8 +79,6 @@ function grant_device_permissions() {
 
   # setup audio device
   [ -e /dev/snd ] && usermod -a -G audio "$1"
-
-  true
 }
 
 function setup_apollo_directories() {
@@ -92,7 +90,7 @@ function setup_apollo_directories() {
 # FIXME(infra): This will change core pattern on the host also,
 # where the `/apollo` directory may not exist.
 function setup_core_pattern() {
-  if [[ -w /proc/sys/kernel/core_pattern ]]; then
+  if [ -e /proc/sys/kernel ]; then
     echo "/apollo/data/core/core_%e.%p" > /proc/sys/kernel/core_pattern
   fi
 }

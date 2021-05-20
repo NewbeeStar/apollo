@@ -1,6 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
-load("//tools/platform:build_defs.bzl", "copts_if_esd_can", "if_esd_can")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -8,7 +7,6 @@ cc_library(
     name = "can_client_factory",
     srcs = ["can_client_factory.cc"],
     hdrs = ["can_client_factory.h"],
-    copts = copts_if_esd_can(),
     deps = [
         "//cyber",
         "//modules/common/util:factory",
@@ -18,9 +16,12 @@ cc_library(
         "//modules/drivers/canbus/can_client/socket:socket_can_client_raw",
         "//modules/drivers/canbus/common:canbus_common",
         "//modules/drivers/canbus/proto:can_card_parameter_cc_proto",
-        ] + if_esd_can([
-        "//modules/drivers/canbus/can_client/esd:esd_can_client",
-    ]),
+    ] + select({
+        "//tools/platform:use_esd_can": [
+            "//modules/drivers/canbus/can_client/esd:esd_can_client",
+        ],
+        "//conditions:default": [],
+    }),
 )
 
 cc_library(

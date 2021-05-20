@@ -1,13 +1,11 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
-load("//tools/install:install.bzl", "install")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
-
 ROUTING_COPTS = ['-DMODULE_NAME=\\"routing\\"']
 
 cc_library(
-    name = "routing",
+    name = "routing_lib",
     srcs = ["routing.cc"],
     hdrs = ["routing.h"],
     copts = ROUTING_COPTS,
@@ -27,7 +25,7 @@ cc_library(
     hdrs = ["routing_component.h"],
     copts = ROUTING_COPTS,
     deps = [
-        ":routing",
+        ":routing_lib",
         "//cyber/time:clock",
     ],
 )
@@ -40,27 +38,10 @@ cc_binary(
 )
 
 filegroup(
-    name = "runtime_data",
+    name = "routing_testdata",
     srcs = glob([
-        "conf/*.conf",
-        "conf/*.pb.txt",
-        "dag/*.dag",
-        "launch/*.launch",
+        "testdata/**",
     ]),
-)
-
-install(
-    name = "install",
-    data = [
-        ":runtime_data",
-    ],
-    targets = [
-        ":librouting_component.so",
-    ],
-    deps = [
-        "//cyber:install",
-        "//modules/routing/topo_creator:install",
-    ],
 )
 
 cpplint()

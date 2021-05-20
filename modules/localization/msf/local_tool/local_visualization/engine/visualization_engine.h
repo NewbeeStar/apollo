@@ -27,9 +27,8 @@
 #include <vector>
 
 #include "Eigen/Geometry"
-#include "opencv2/opencv.hpp"
-
 #include "modules/common/util/eigen_defs.h"
+#include "opencv2/opencv.hpp"
 
 namespace apollo {
 namespace localization {
@@ -40,6 +39,8 @@ namespace msf {
  * @brief The data structure to store info of a localization
  */
 struct LocalizatonInfo {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   void set(const Eigen::Translation3d &location,
            const Eigen::Quaterniond &attitude, const Eigen::Vector3d &std_var,
            const std::string &description, const double timestamp,
@@ -87,9 +88,6 @@ struct LocalizatonInfo {
   bool is_valid = false;
   bool is_has_attitude = false;
   bool is_has_std = false;
-
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 /**
@@ -170,7 +168,7 @@ class VisualizationEngine {
             const VisualMapParam &map_param, const unsigned int resolution_id,
             const int zone_id, const Eigen::Affine3d &extrinsic,
             const unsigned int loc_info_num = 1);
-  void Visualize(::apollo::common::EigenVector<LocalizatonInfo> &&loc_infos,
+  void Visualize(const std::vector<LocalizatonInfo> &loc_infos,
                  const ::apollo::common::EigenVector3dVec &cloud);
   void SetAutoPlay(bool auto_play);
 
@@ -286,7 +284,7 @@ class VisualizationEngine {
   unsigned int loc_info_num_ = 1;
   unsigned int car_loc_id_ = 0;
   unsigned int expected_car_loc_id_ = 0;
-  ::apollo::common::EigenVector<LocalizatonInfo> cur_loc_infos_;
+  std::vector<LocalizatonInfo> cur_loc_infos_;
   std::vector<std::map<double, Eigen::Vector2d>> trajectory_groups_;
 
   bool is_draw_car_ = true;

@@ -25,7 +25,6 @@ cc_library(
         "//modules/perception/camera/lib/interface",
         "//modules/perception/camera/lib/obstacle/transformer/multicue/proto:multicue_cc_proto",
     ],
-    alwayslink = True,
 )
 
 cpplint()

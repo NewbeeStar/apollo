@@ -1,6 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
-load("//tools/platform:build_defs.bzl", "copts_if_esd_can", "if_esd_can")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -39,15 +38,18 @@ cc_library(
     name = "esdcan_monitor",
     srcs = ["esdcan_monitor.cc"],
     hdrs = ["esdcan_monitor.h"],
-    copts = MONITOR_COPTS + copts_if_esd_can(),
+    copts = MONITOR_COPTS,
     deps = [
         "//modules/common/util",
         "//modules/monitor/common:monitor_manager",
         "//modules/monitor/common:recurrent_runner",
         "//modules/monitor/software:summary_monitor",
-        ] + if_esd_can([
-        "//modules/drivers/canbus/can_client/esd:esd_can_client",
-    ]),
+    ] + select({
+        "//tools/platform:use_esd_can": [
+            "//third_party/can_card_library/esd_can",
+        ],
+        "//conditions:default": [],
+    }),
 )
 
 cc_library(

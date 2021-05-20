@@ -255,14 +255,14 @@ Status LonController::ComputeControlCommand(
         speed_leadlag_controller_.InnerstateSaturationStatus());
   }
 
-  double slope_offset_compensation = digital_filter_pitch_angle_.Filter(
+  double slope_offset_compenstaion = digital_filter_pitch_angle_.Filter(
       GRA_ACC * std::sin(injector_->vehicle_state()->pitch()));
 
-  if (std::isnan(slope_offset_compensation)) {
-    slope_offset_compensation = 0;
+  if (std::isnan(slope_offset_compenstaion)) {
+    slope_offset_compenstaion = 0;
   }
 
-  debug->set_slope_offset_compensation(slope_offset_compensation);
+  debug->set_slope_offset_compensation(slope_offset_compenstaion);
 
   double acceleration_cmd =
       acceleration_cmd_closeloop + debug->preview_acceleration_reference() +
@@ -272,9 +272,8 @@ Status LonController::ComputeControlCommand(
 
   // At near-stop stage, replace the brake control command with the standstill
   // acceleration if the former is even softer than the latter
-  if (((trajectory_message_->trajectory_type() ==
-       apollo::planning::ADCTrajectory::NORMAL)||(trajectory_message_->trajectory_type() ==
-       apollo::planning::ADCTrajectory::NORMAL)) &&
+  if ((trajectory_message_->trajectory_type() ==
+       apollo::planning::ADCTrajectory::NORMAL) &&
       ((std::fabs(debug->preview_acceleration_reference()) <=
             control_conf_->max_acceleration_when_stopped() &&
         std::fabs(debug->preview_speed_reference()) <=
@@ -289,6 +288,7 @@ Status LonController::ComputeControlCommand(
                        lon_controller_conf.standstill_acceleration());
     ADEBUG << "Stop location reached";
     debug->set_is_full_stop(true);
+    
   }
 
   double throttle_lowerbound =

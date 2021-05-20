@@ -55,7 +55,6 @@ cc_library(
         "//modules/perception/camera/lib/obstacle/tracker/common",
         "//modules/perception/camera/lib/obstacle/tracker/omt/proto:omt_cc_proto",
     ],
-    alwayslink = True,
 )
 
 cc_library(

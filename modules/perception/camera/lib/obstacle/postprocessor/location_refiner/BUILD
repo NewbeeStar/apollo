@@ -14,7 +14,6 @@ cc_library(
         "//modules/perception/camera/lib/interface",
         "//modules/perception/camera/lib/obstacle/postprocessor/location_refiner/proto:location_refiner_cc_proto",
     ],
-    alwayslink = True,
 )
 
 cc_library(
