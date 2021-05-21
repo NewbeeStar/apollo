@@ -111,6 +111,14 @@ class ControlInfo(object):
 
         self.planningavailable = False
 
+        #PID information
+        self.station_kp = []
+        self.station_ki = []
+        self.station_kd = []
+        self.speed_kp = []
+        self.speed_ki = []
+        self.speed_kd = []
+
         self.carx = []
         self.cary = []
         self.cartime = []
@@ -235,6 +243,12 @@ class ControlInfo(object):
         self.lateral_error_rate.append(
             entity.debug.simple_lat_debug.lateral_error_rate)
         self.drivingAction.append(entity.pad_msg.action)
+        self.station_kp.append(entity.debug.simple_lon_debug.station_kp)
+        self.station_ki.append(entity.debug.simple_lon_debug.station_ki)
+        self.station_kd.append(entity.debug.simple_lon_debug.station_kd)
+        self.speed_kp.append(entity.debug.simple_lon_debug.speed_kp)
+        self.speed_ki.append(entity.debug.simple_lon_debug.speed_ki)
+        self.speed_kd.append(entity.debug.simple_lon_debug.speed_kd)
 
     def read_bag(self, bag_file):
         file_path = bag_file
@@ -291,6 +305,35 @@ class ControlInfo(object):
         ax[1].plot(
             self.controltime, self.speed_reference,marker = '*',markersize=2, linewidth=1.0, label='speed_reference')
         ax[1].legend(fontsize='medium')
+        ax[1].grid(True)
+        ax[1].set_title('Speed Info')
+        ax[1].set_xlabel('Time-s')
+        ax[1].set_ylabel('Speed-m/s')
+
+        if len(self.mode_time) % 2 == 1:
+            self.mode_time.append(self.controltime[-1])
+        for i in range(0, len(self.mode_time), 2):
+            ax[0].axvspan(
+                self.mode_time[i], self.mode_time[i + 1], fc='0.1', alpha=0.1)
+            ax[1].axvspan(
+                self.mode_time[i], self.mode_time[i + 1], fc='0.1', alpha=0.1)
+
+    def plot_PID(self):
+        fig, ax = plt.subplots(2, 1)
+        ax[0].get_shared_x_axes().join(ax[0], ax[1])
+
+        ax[0].plot(self.controltime, self.station_kp, marker = '*',markersize=2,linewidth=1.0, label='station_kp')
+        ax[0].plot(self.controltime, self.station_ki, marker = '*',markersize=2,linewidth=1.0, label='station_ki')
+        ax[0].plot(self.controltime, self.station_kd, marker = '*',markersize=2,linewidth=1.0, label='station_kd')
+        ax[0].legend(fontsize='medium')
+        ax[0].grid(True)
+        ax[0].set_title('Station information')
+        ax[0].set_xlabel('Time-s')
+        ax[0].set_ylabel('Station-m')
+
+        ax[1].plot(self.controltime, self.speed_kp, marker = '*',markersize=2,linewidth=1.0, label='speed_kp')
+        ax[1].plot(self.controltime, self.speed_kp, marker = '*',markersize=2,linewidth=1.0, label='speed_kp')
+        ax[1].plot(self.controltime, self.speed_kp, marker = '*',markersize=2,linewidth=1.0, label='speed_kp')
         ax[1].grid(True)
         ax[1].set_title('Speed Info')
         ax[1].set_xlabel('Time-s')
@@ -864,11 +907,11 @@ if __name__ == "__main__":
         raw_input("Press Enter To Stop")
     
     controlinfo.Print_len()
-    controlinfo.show_longitudinal()
+    # controlinfo.show_longitudinal()
     # controlinfo.show_lateral()
-    controlinfo.show_localization()
+    # controlinfo.show_localization()
     controlinfo.show_longitudinal1()
-
+    controlinfo.plot_PID()
     book.close()
 
     fig.canvas.mpl_connect('key_press_event', controlinfo.press)
