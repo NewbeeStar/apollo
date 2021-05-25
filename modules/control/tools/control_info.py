@@ -243,12 +243,12 @@ class ControlInfo(object):
         self.lateral_error_rate.append(
             entity.debug.simple_lat_debug.lateral_error_rate)
         self.drivingAction.append(entity.pad_msg.action)
-        self.station_kp.append(entity.debug.simple_lon_debug.station_kp)
-        self.station_ki.append(entity.debug.simple_lon_debug.station_ki)
-        self.station_kd.append(entity.debug.simple_lon_debug.station_kd)
-        self.speed_kp.append(entity.debug.simple_lon_debug.speed_kp)
-        self.speed_ki.append(entity.debug.simple_lon_debug.speed_ki)
-        self.speed_kd.append(entity.debug.simple_lon_debug.speed_kd)
+        self.station_kp.append(entity.debug.simple_lon_debug.path_remain)
+        self.station_ki.append(entity.debug.simple_lon_debug.path_remain)
+        self.station_kd.append(entity.debug.simple_lon_debug.path_remain)
+        self.speed_kp.append(entity.debug.simple_lon_debug.path_remain)
+        self.speed_ki.append(entity.debug.simple_lon_debug.path_remain)
+        self.speed_kd.append(entity.debug.simple_lon_debug.path_remain)
 
     def read_bag(self, bag_file):
         file_path = bag_file
@@ -332,8 +332,9 @@ class ControlInfo(object):
         ax[0].set_ylabel('Station-m')
 
         ax[1].plot(self.controltime, self.speed_kp, marker = '*',markersize=2,linewidth=1.0, label='speed_kp')
-        ax[1].plot(self.controltime, self.speed_kp, marker = '*',markersize=2,linewidth=1.0, label='speed_kp')
-        ax[1].plot(self.controltime, self.speed_kp, marker = '*',markersize=2,linewidth=1.0, label='speed_kp')
+        ax[1].plot(self.controltime, self.speed_ki, marker = '*',markersize=2,linewidth=1.0, label='speed_ki')
+        ax[1].plot(self.controltime, self.speed_kd, marker = '*',markersize=2,linewidth=1.0, label='speed_kd')
+        ax[1].legend(fontsize='medium')
         ax[1].grid(True)
         ax[1].set_title('Speed Info')
         ax[1].set_xlabel('Time-s')
@@ -496,8 +497,8 @@ class ControlInfo(object):
 
         ax[1, 2].plot(
             self.controltime, self.is_full_stop,marker = '*',markersize=2, label='is_full_stop')
-        # ax[1, 2].plot(
-        #     self.controltime, self.pid_saturation_status,marker = '*',markersize=2, label='pid_saturation_status')
+        ax[1, 2].plot(
+            self.controltime, self.pid_saturation_status,marker = '*',markersize=2, label='pid_saturation_status')
         # ax[1, 2].plot(
         #     self.controltime, self.Driving_mode, label='Driving_mode')
         # ax[1, 2].plot(

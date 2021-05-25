@@ -72,6 +72,10 @@ class PIDController {
    */
   int IntegratorSaturationStatus() const;
 
+double PIDController::kp() const;
+double PIDController::ki() const ;
+double PIDController::kd() const;
+double PIDController::Integrator() const ;
   /**
    * @brief get status that if integrator is hold
    * @return if integrator is hold return true

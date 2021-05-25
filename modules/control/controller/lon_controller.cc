@@ -235,6 +235,7 @@ Status LonController::ComputeControlCommand(
   if (enable_leadlag) {
     speed_offset = station_leadlag_controller_.Control(speed_offset, ts);
   }
+  debug->set_station_integral(station_pid_controller_.Integrator());
 
   double speed_controller_input = 0.0;
   double speed_controller_input_limit =
@@ -261,6 +262,7 @@ Status LonController::ComputeControlCommand(
     debug->set_leadlag_saturation_status(
         speed_leadlag_controller_.InnerstateSaturationStatus());
   }
+  debug->set_speed_integral(speed_pid_controller_.Integrator());
 
   double slope_offset_compenstaion = digital_filter_pitch_angle_.Filter(
       GRA_ACC * std::sin(injector_->vehicle_state()->pitch()));
